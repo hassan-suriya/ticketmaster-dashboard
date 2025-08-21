@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id              String    @id
+  name            String
+  description     String?
+  url             String?
+  locale          String?
+  
+  // Date and Time
+  startDate       DateTime?
+  startTime       String?
+  timezone        String?
+  
+  // Status
+  status          String?
+  pleaseNote      String?
+  
+  // Images
+  images          Json[]    @default([])
+  
+  // Price ranges
+  priceRanges     Json[]    @default([])
+  
+  // Classifications
+  classifications Json[]    @default([])
+  
+  // Venue information
+  venueId         String?
+  venue           Venue?    @relation(fields: [venueId], references: [id])
+  
+  // Attractions
+  attractions     Json[]    @default([])
+  
+  // Sales information
+  sales           Json?
+  dates           Json?
+  
+  // API metadata
+  source          String?
+  apiVersion      String?
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@map("events")
+}
+
+model Venue {
+  id          String  @id
+  name        String
+  type        String?
+  url         String?
+  locale      String?
+  
+  // Address information
+  address     Json?
+  city        Json?
+  state       Json?
+  country     Json?
+  postalCode  String?
+  
+  // Location
+  location    Json?
+  
+  // Images
+  images      Json[]  @default([])
+  
+  // Social media and contact
+  social      Json?
+  
+  // Box office info
+  boxOfficeInfo Json?
+  
+  // Parking and accessibility
+  parkingDetail Json?
+  accessibleSeatingDetail Json?
+  
+  // General info
+  generalInfo Json?
+  
+  // API metadata
+  source      String?
+  apiVersion  String?
+  
+  // Relationships
+  events      Event[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("venues")
+}
+
+model Attraction {
+  id              String  @id
+  name            String
+  type            String?
+  url             String?
+  locale          String?
+  
+  // Images
+  images          Json[]  @default([])
+  
+  // Classifications
+  classifications Json[]  @default([])
+  
+  // External links
+  externalLinks   Json?
+  
+  // Upcoming events info
+  upcomingEvents  Json?
+  
+  // API metadata
+  source          String?
+  apiVersion      String?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("attractions")
+}
+
+model SearchLog {
+  id          String   @id @default(cuid())
+  query       String
+  filters     Json?
+  resultsCount Int?
+  timestamp   DateTime @default(now())
+  
+  @@map("search_logs")
+}
