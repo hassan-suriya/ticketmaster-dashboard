@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "env": {
+    "TICKETMASTER_API_KEY": "@ticketmaster-api-key"
+  },
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
