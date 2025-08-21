@@ -1,15 +1,15 @@
-# Ticketmaster Dashboard
+# EventHub
 
-A modern dashboard built with Next.js that integrates with the Ticketmaster Discovery API v2.0 to provide real-time access to events, venues, and attractions data.
+A modern events discovery platform built with Next.js that provides real-time access to live events, venues, and entertainment data worldwide.
 
 ## Features
 
 - 🎟️ **Event Discovery**: Search and browse events with advanced filtering
-- 🏟️ **Venue Explorer**: Find and explore venues worldwide
+- 🏟️ **Venue Explorer**: Find and explore venues worldwide  
 - 🎵 **Attraction Search**: Discover artists, sports teams, and attractions
 - 📊 **Data Export**: Export search results to CSV
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile
-- ⚡ **Real-time API Integration**: Live data from Ticketmaster
+- ⚡ **Real-time Data**: Live event information updated continuously
 
 ## Tech Stack
 
