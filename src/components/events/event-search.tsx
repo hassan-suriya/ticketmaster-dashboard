@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Download, Calendar, MapPin } from 'lucide-react';
+import { Search, Filter, Download, Calendar, MapPin, Clock, DollarSign, ExternalLink, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
@@ -121,7 +121,7 @@ export function EventSearch({ onEventsChange }: EventSearchProps) {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `ticketmaster-events-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `eventhub-events-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
   };
 
@@ -131,149 +131,181 @@ export function EventSearch({ onEventsChange }: EventSearchProps) {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Search and Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
-            Search Events
+      <div className="search-section">
+        <CardHeader className="pb-6">
+          <CardTitle className="flex items-center gap-3 text-2xl">
+            <div className="p-2 bg-primary-100 rounded-lg">
+              <Search className="h-6 w-6 text-primary-600" />
+            </div>
+            Discover Amazing Events
           </CardTitle>
+          <p className="text-gray-600 mt-2">Search through thousands of live events worldwide</p>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Keyword
+        <CardContent className="space-y-6">
+          <div className="search-grid">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
+                Search Events
               </label>
               <Input
-                placeholder="Search events..."
+                placeholder="Concert, sports, theater..."
                 value={filters.keyword || ''}
                 onChange={(e) => setFilters({ ...filters, keyword: e.target.value })}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary-500"
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 City
               </label>
               <Input
-                placeholder="Enter city"
+                placeholder="New York, London, Tokyo..."
                 value={filters.city || ''}
                 onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary-500"
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Country
               </label>
               <Select
                 value={filters.countryCode || 'US'}
                 onChange={(e) => setFilters({ ...filters, countryCode: e.target.value })}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary-500"
               >
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-                <option value="GB">United Kingdom</option>
-                <option value="AU">Australia</option>
-                <option value="DE">Germany</option>
-                <option value="FR">France</option>
-                <option value="ES">Spain</option>
-                <option value="IT">Italy</option>
-                <option value="NL">Netherlands</option>
-                <option value="MX">Mexico</option>
+                <option value="US">🇺🇸 United States</option>
+                <option value="CA">🇨🇦 Canada</option>
+                <option value="GB">🇬🇧 United Kingdom</option>
+                <option value="AU">🇦🇺 Australia</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="ES">🇪🇸 Spain</option>
+                <option value="IT">🇮🇹 Italy</option>
+                <option value="NL">🇳🇱 Netherlands</option>
+                <option value="MX">🇲🇽 Mexico</option>
               </Select>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Sort By
               </label>
               <Select
                 value={filters.sort || 'date,asc'}
                 onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary-500"
               >
-                <option value="date,asc">Date (Ascending)</option>
-                <option value="date,desc">Date (Descending)</option>
-                <option value="name,asc">Name (A-Z)</option>
-                <option value="name,desc">Name (Z-A)</option>
-                <option value="relevance,desc">Relevance</option>
+                <option value="date,asc">📅 Date (Nearest First)</option>
+                <option value="date,desc">📅 Date (Farthest First)</option>
+                <option value="name,asc">🔤 Name (A-Z)</option>
+                <option value="name,desc">🔤 Name (Z-A)</option>
+                <option value="relevance,desc">⭐ Most Relevant</option>
               </Select>
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Button onClick={handleSearch} disabled={loading}>
-              <Search className="h-4 w-4 mr-2" />
-              Search
+          <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+            <Button onClick={handleSearch} disabled={loading} size="lg" className="flex-1 sm:flex-none">
+              {loading ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <Search className="h-4 w-4 mr-2" />
+                  Search Events
+                </>
+              )}
             </Button>
             
             <Button
               variant="outline"
               onClick={exportToCSV}
               disabled={events.length === 0}
+              size="lg"
             >
               <Download className="h-4 w-4 mr-2" />
               Export CSV
             </Button>
+            
+            <div className="flex items-center px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600">
+              <Sparkles className="h-4 w-4 mr-2 text-primary-500" />
+              {totalEvents > 0 ? `${totalEvents.toLocaleString()} events found` : 'Ready to search'}
+            </div>
           </div>
         </CardContent>
-      </Card>
+      </div>
 
       {/* Results */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Events {totalEvents > 0 && `(${totalEvents.toLocaleString()} results)`}
-          </h2>
-        </div>
-
+      <div className="space-y-6">
         {loading && (
-          <div className="flex justify-center py-8">
-            <LoadingSpinner size="lg" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <LoadingSpinner size="lg" className="mb-4" />
+            <p className="text-gray-600 text-lg">Finding amazing events for you...</p>
           </div>
         )}
 
         {error && (
-          <div className="text-center py-8">
-            <p className="text-red-600">{error}</p>
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+              <Search className="h-8 w-8 text-red-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No events found</h3>
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button variant="outline" onClick={() => searchEvents(filters)}>
+              Try Again
+            </Button>
           </div>
         )}
 
         {!loading && !error && events.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-500">No events found. Try adjusting your search criteria.</p>
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <Calendar className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to discover events</h3>
+            <p className="text-gray-600 mb-4">Use the search filters above to find concerts, sports, theater, and more!</p>
           </div>
         )}
 
         {!loading && events.length > 0 && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {events.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-center mt-8">
-              <div className="flex space-x-2">
+            <div className="flex justify-center mt-12">
+              <div className="flex items-center space-x-3 bg-white rounded-xl shadow-soft border border-gray-200 p-2">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 0}
+                  className="px-4"
                 >
                   Previous
                 </Button>
                 
-                <span className="flex items-center px-4 text-sm text-gray-700">
-                  Page {currentPage + 1}
-                </span>
+                <div className="flex items-center px-4 py-2 bg-primary-50 rounded-lg">
+                  <span className="text-sm font-medium text-primary-700">
+                    Page {currentPage + 1}
+                  </span>
+                </div>
                 
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={events.length < (filters.size || 20)}
+                  className="px-4"
                 >
                   Next
                 </Button>
@@ -293,75 +325,105 @@ function EventCard({ event }: { event: Event }) {
   const startTime = event.dates?.start?.localTime;
   const priceRange = event.priceRanges?.[0];
 
+  const getStatusBadge = (status?: string) => {
+    switch (status?.toLowerCase()) {
+      case 'onsale':
+        return <span className="status-onsale">On Sale</span>;
+      case 'offsale':
+        return <span className="status-offsale">Off Sale</span>;
+      case 'presale':
+        return <span className="status-presale">Pre-Sale</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <div className="aspect-video relative overflow-hidden rounded-t-lg">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+    <div className="event-card">
+      <div className="relative overflow-hidden rounded-t-xl">
         <img
           src={imageUrl}
           alt={event.name}
-          className="w-full h-full object-cover"
+          className="event-card-image"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = '/placeholder-image.jpg';
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        
+        {/* Status Badge */}
         {event.status?.code && (
-          <div className="absolute top-2 right-2">
-            <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
-              {event.status.code}
-            </span>
+          <div className="absolute top-4 right-4">
+            {getStatusBadge(event.status.code)}
           </div>
         )}
+        
+        {/* Quick Info Overlay */}
+        <div className="absolute bottom-4 left-4 right-4">
+          {startDate && (
+            <div className="flex items-center text-white text-sm font-medium mb-1">
+              <Calendar className="h-4 w-4 mr-2" />
+              {formatDate(startDate)}
+            </div>
+          )}
+        </div>
       </div>
       
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
-          {event.name}
-        </h3>
-        
-        {startDate && (
-          <div className="flex items-center text-sm text-gray-600 mb-1">
-            <Calendar className="h-4 w-4 mr-1" />
-            {formatDate(startDate)}
-            {startTime && ` at ${formatTime(startTime)}`}
+      <div className="event-card-content space-y-4">
+        <div>
+          <h3 className="event-card-title">
+            {event.name}
+          </h3>
+          
+          <div className="space-y-2">
+            {startTime && (
+              <div className="event-card-info">
+                <Clock className="h-4 w-4 mr-2 text-primary-500" />
+                {formatTime(startTime)}
+              </div>
+            )}
+            
+            {venue && (
+              <div className="event-card-info">
+                <MapPin className="h-4 w-4 mr-2 text-primary-500" />
+                <span className="truncate">
+                  {venue.name}
+                  {venue.city?.name && `, ${venue.city.name}`}
+                  {venue.state?.stateCode && `, ${venue.state.stateCode}`}
+                </span>
+              </div>
+            )}
           </div>
-        )}
+        </div>
         
-        {venue && (
-          <div className="flex items-center text-sm text-gray-600 mb-2">
-            <MapPin className="h-4 w-4 mr-1" />
-            {venue.name}
-            {venue.city?.name && `, ${venue.city.name}`}
-            {venue.state?.stateCode && `, ${venue.state.stateCode}`}
-          </div>
-        )}
-        
-        {priceRange && (
-          <div className="text-sm text-gray-900 font-medium">
-            {priceRange.min && priceRange.max
-              ? `${formatPrice(priceRange.min)} - ${formatPrice(priceRange.max)}`
-              : priceRange.min
-              ? `From ${formatPrice(priceRange.min)}`
-              : priceRange.max
-              ? `Up to ${formatPrice(priceRange.max)}`
-              : 'Price TBA'}
-          </div>
-        )}
-        
-        {event.url && (
-          <div className="mt-3">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          {priceRange && (
+            <div className="event-card-price flex items-center">
+              <DollarSign className="h-4 w-4 mr-1" />
+              {priceRange.min && priceRange.max
+                ? `${formatPrice(priceRange.min)} - ${formatPrice(priceRange.max)}`
+                : priceRange.min
+                ? `From ${formatPrice(priceRange.min)}`
+                : priceRange.max
+                ? `Up to ${formatPrice(priceRange.max)}`
+                : 'Price TBA'}
+            </div>
+          )}
+          
+          {event.url && (
             <a
               href={event.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              className="inline-flex items-center text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
             >
-              View on Ticketmaster →
+              View Tickets
+              <ExternalLink className="h-3 w-3 ml-1" />
             </a>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
